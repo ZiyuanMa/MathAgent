@@ -36,6 +36,7 @@ def get_llm(temperature: float = 0.6, max_tokens: int = 32768, seed: int = 42):
             "temperature": temperature,
             "max_tokens": max_tokens,
             "seed": seed,
+            "timeout": 60,  # fail fast instead of hanging indefinitely
         }
         if base_url:
             kwargs["base_url"] = base_url
