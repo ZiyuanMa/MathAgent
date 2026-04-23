@@ -21,5 +21,6 @@ results/
 # Jupyter
 .ipynb_checkpoints/
 
-# Environment
+# Environment secrets (keep local overrides here)
 .env.local
+.env.secret

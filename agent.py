@@ -30,7 +30,7 @@ def get_llm(temperature: float = 0.6, max_tokens: int = 32768, seed: int = 42):
         if base_url:
             kwargs["base_url"] = base_url
         return ChatOllama(**kwargs)
-    elif provider in ("openai", "vllm"):
+    elif provider in ("openai", "vllm", "openrouter"):
         kwargs = {
             "model": model_name,
             "temperature": temperature,
@@ -41,6 +41,19 @@ def get_llm(temperature: float = 0.6, max_tokens: int = 32768, seed: int = 42):
             kwargs["base_url"] = base_url
         api_key = os.getenv("OPENAI_API_KEY", "sk-no-key-required")
         kwargs["api_key"] = api_key
+
+        # OpenRouter extra headers for ranking stats
+        if provider == "openrouter":
+            default_headers = {}
+            referer = os.getenv("OPENROUTER_HTTP_REFERER")
+            if referer:
+                default_headers["HTTP-Referer"] = referer
+            app_name = os.getenv("OPENROUTER_APP_NAME")
+            if app_name:
+                default_headers["X-Title"] = app_name
+            if default_headers:
+                kwargs["default_headers"] = default_headers
+
         return ChatOpenAI(**kwargs)
     else:
         raise ValueError(f"Unknown provider: {provider}")
